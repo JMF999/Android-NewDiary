@@ -3,7 +3,6 @@ package com.example.newdiary
 import android.app.Application
 import android.content.res.Configuration
 import android.util.Log
-import kotlin.coroutines.coroutineContext
 
 class MyApplication : Application() {
     companion object{
@@ -20,10 +19,8 @@ class MyApplication : Application() {
         super.onCreate()
         app = this
         dataRepository = DataRepository(applicationContext)
-        Log.d("MyApplication", "onCreate: " + app)
+        Log.d("MyApplication", "数据仓库初始化完成！")
 
-        // 判断外部储存是否可用
-//        updateExternalStorageState()
         dataRepository.inRead() // 加载数据
     }
 

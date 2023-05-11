@@ -3,77 +3,122 @@ package com.example.newdiary
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.haibin.calendarview.Calendar
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
 
-// TODO: 1.改为带参（context）单例模式 2.检查逻辑顺序，重新修改保存读取方法，清晰log
-class DataRepository(private val context:Context) {
-
-//    var calendarMap = mutableMapOf<String,com.haibin.calendarview.Calendar>()
-    var liveCalendarMap = MutableLiveData<MutableMap<String,com.haibin.calendarview.Calendar>>()
-//    val liveCalendarMap:LiveData<MutableMap<String,com.haibin.calendarview.Calendar>> get() = _liveCalendarMap
+// todo 单例模式
+class DataRepository(private val context: Context) {
+    var calendarMap = mutableMapOf<String,Calendar>()
 
     // 外部储存路径
     private val dataOutFilePath =
         Environment.getExternalStorageDirectory().absolutePath + File.separator + "Diary"
-
     // 内部储存路径
     private val dataInFilePath: String = context.filesDir.path
     private val dataFileName = "XData.json"
-    private val dataFileName1 = "xDataCalendar.json"
 
     private val TAG = "DataRepository"
-
 
     /**
      * 保存数据到内部储存
      */
     fun inSave() {
-        save(dataInFilePath)
+        newSave(dataInFilePath)
     }
 
     /**
      * 读取内部储存数据
      */
     fun inRead() {
-        read(dataInFilePath)
+        newRead(dataInFilePath)
     }
 
     /**
      * 导出数据到指定路径
      */
     fun outData() {
-        save(dataOutFilePath)
-        MyToast.showMsg(context, "数据输出完成！\n$dataOutFilePath")
+        newSave(dataOutFilePath)
+        Log.d(TAG, "outData: 数据输出完成！\n$dataOutFilePath")
+        MyToast.showToast(context, "数据输出完成！\n$dataOutFilePath")
     }
 
     /**
      * 从指定路径导入数据
      */
     fun importData() {
-        read(dataOutFilePath)
+        newRead(dataOutFilePath)
         inSave()
-        MyToast.showMsg(context, "数据导入完成!")
+        Log.d(TAG, "outData: 数据导入完成!")
+        MyToast.showToast(context, "数据导入完成!")
+    }
+
+    /**
+     * 添加数据
+     * @return true成功，false失败
+     */
+    fun add(calendar: Calendar): Boolean {
+        if (!checkList(calendar)) {
+            calendarMap[calendar.toString()] = calendar
+            Log.d(TAG, "add: $calendar")
+            Log.d(TAG, "map: \n$calendarMap")
+            inSave()
+            return true
+        }else{
+            MyToast.showToast(context,"数据已存在！")
+            Log.d(TAG, "add: 数据已存在")
+        }
+        return false
+    }
+
+    /**
+     * 删除数据
+     * @return true成功，false失败
+     */
+    fun remove(calendar: Calendar): Boolean {
+        if (checkList(calendar)) {
+            calendarMap.remove(calendar.toString())
+            Log.d(TAG, "remove: $calendar")
+            Log.d(TAG, "map: \n$calendarMap")
+            inSave()
+            return true
+        }else{
+            MyToast.showToast(context,"数据不存在！")
+            Log.d(TAG, "remove: 数据不存在")
+        }
+        return false
+    }
+
+    /**
+     * 检查列表中是否存在指定日期
+     * @return  存在rue, 否则false
+     */
+    private fun checkList(calendar: Calendar): Boolean {
+        for (l in calendarMap) {
+            if (l.value == calendar) {
+                return true
+            }
+        }
+        return false
     }
 
     /**
      * 保存数据文件基本方法
      * @param path 文件路径
      */
-    private fun save(path: String) {
+    private fun newSave(path: String) {
         var fileOutput: FileOutputStream? = null
         try {
-            // 判断目录是否存在
+            // 判断目录文件夹是否存在
             if (!File(path).exists()) {
                 File(path).mkdirs()
             }
             val file = File(path, dataFileName)
+            // 判断文件是否存在
             if (!file.exists()) {
                 file.createNewFile() // 创建文件
             }
@@ -81,15 +126,14 @@ class DataRepository(private val context:Context) {
             fileOutput = FileOutputStream(file)
 
             // 将数据List转化为Str
-//            val diaryListStr: String = Gson().toJson(calendarMapToTimeInMillisList(calendarMap))
-            val diaryListStr: String = Gson().toJson(calendarMapToTimeInMillisList(getCalendarMap()))
+            val dataString: String = Gson().toJson(calendarMap)
 
             // 保存对象
-            fileOutput.write(diaryListStr.toByteArray())
-            Log.d(TAG, "save()方法: XDataList集合信息保存完成！")
+            fileOutput.write(dataString.toByteArray())
+            Log.d(TAG, "save: 数据写入文件完成.")
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.d(TAG, "save()方法: 创建序列流或IO流失败！")
+            Log.d(TAG, "save: 创建序列流或IO流失败.")
         } finally {
             if (fileOutput != null) {
                 try {
@@ -104,145 +148,53 @@ class DataRepository(private val context:Context) {
     /**
      * 读取文件
      */
-    private fun read(path: String) {
-        var xDataStr = StringBuilder()
+    private fun newRead(path: String) {
+        val dataStr = StringBuilder()
         var fileInput: FileInputStream? = null
+        val file = File(path + File.separator + dataFileName)
+        Log.d(TAG, "文件路径: $file")
+
         try {
-            val file = File(path + File.separator + dataFileName)
-            // 创建输入流
-            fileInput = FileInputStream(file)
+            if (file.exists()) {
+                // 创建输入流
+                fileInput = FileInputStream(file)
 
-            var len = 0
-            val b: ByteArray = ByteArray(1024)
-            while (fileInput.read(b).also { len = it } != -1){
-                xDataStr.append(String(b,0,len))
+                var len: Int
+                val b = ByteArray(1024)
+                while (fileInput.read(b).also { len = it } != -1) {
+                    dataStr.append(String(b, 0, len))
+                }
+                Log.d(TAG, "读取出文件dataStr： $dataStr")
+
+                if(dataStr.isEmpty()){
+                    calendarMap = mutableMapOf()
+                    Log.d(TAG, "newRead: 初始化map$calendarMap")
+                }else{
+                    calendarMap = Gson().fromJson(dataStr.toString(), object :TypeToken<MutableMap<String, Calendar>>(){}.type)
+                }
+
+                Log.d(TAG, "read: 数据读取完成.")
+            } else {
+                // todo 文件不存在处理
+                Log.d(TAG, "newRead: 文件不存在!")
+                inSave()
             }
-
-            val xDataList:MutableList<Long> = Gson().fromJson(xDataStr.toString(), object :TypeToken<MutableList<Long>>(){}.type)
-//            calendarMap = timeInMillisListToCalendarMap(xDataList)
-            liveCalendarMap = MutableLiveData(timeInMillisListToCalendarMap(xDataList))
-            Log.d(TAG, "read: 数据读取完成\n$liveCalendarMap.value")
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.d(TAG, "read()方法: IO流创建失败！请检查是否第一次运行APP，如不是则找不数据文件或已损坏")
-            save(dataInFilePath)
-        } finally {
+        }catch (e: IOException){
+            Log.d(TAG, "newRead: $e")
+        }finally {
             // 释放资源
             if (fileInput != null) {
                 try {
                     fileInput.close()
-                    Log.d(TAG, "read()方法: XData.json文件释放成功！")
+                    Log.d(TAG, "read方法: 数据文件文件释放成功！")
                 } catch (e: IOException) {
                     e.printStackTrace()
-                    Log.d(TAG, "read()方法: XData.json文件关闭失败！")
+                    Log.d(TAG, "read方法: 数据文件文件关闭失败！$e")
                 }
             }
         }
-    }
 
-    private fun getCalendarMap(): MutableMap<String, com.haibin.calendarview.Calendar> {
-        return liveCalendarMap.value!!
-    }
 
-    /**
-     * 添加数据
-     * @return true成功，false失败
-     */
-    fun add(calendar: com.haibin.calendarview.Calendar): Boolean {
-        if(!checkList(calendar)){
-//            calendarMap[calendar.toString()] = calendar
-            liveCalendarMap.value?.set(calendar.toString(), calendar)
-            Log.d(TAG, "add: "+liveCalendarMap.value)
-            inSave()
-            return true
-        }
-        return false
-    }
 
-    /**
-     * 删除数据
-     * @return true成功，false失败
-     */
-    fun remove(calendar: com.haibin.calendarview.Calendar): Boolean {
-        if(checkList(calendar)){
-//            calendarMap[calendar.toString()] = calendar
-            liveCalendarMap.value?.remove(calendar.toString())
-            Log.d(TAG, "remove: "+liveCalendarMap.value)
-            inSave()
-            return true
-        }
-        return false
-    }
-
-    /**
-     * 检查列表中是否存在指定日期，如果存在则返回该日期
-     * @return
-     */
-    // todo orEmpty不知道是啥
-    private fun checkList(calendar: com.haibin.calendarview.Calendar): Boolean {
-        for (l in liveCalendarMap.value.orEmpty()) {
-            if(l.value == calendar){
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * 获取指定日期的Calendar日历类：毫秒值———Calendar日历类
-     * @return
-     */
-    fun getCalendarFromLong(date: Long): Calendar {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
-        return calendar
-    }
-
-    /**
-     * 获取指定日期的毫秒值
-     * @param year
-     * @param month 指定月，按照1-12月传入参数，内部会自动将月数-1处理
-     * @param day
-     * @return
-     */
-    fun getTimeInMillis(year: Int, month: Int, day: Int): Long {
-        val calendar = Calendar.getInstance()
-        calendar.set(year,month - 1, day)
-        return calendar.timeInMillis
-    }
-
-    /**
-     * 毫秒值转CalendarView的Calendar
-     */
-    private fun timeInMillisToCalendar(long: Long):com.haibin.calendarview.Calendar{
-        val date = Date().also { it.time = long }
-        val calendar: Calendar = Calendar.getInstance().also { it.time = date }
-        val calendar1: com.haibin.calendarview.Calendar = com.haibin.calendarview.Calendar().also {
-            it.year = calendar[Calendar.YEAR]
-            it.month = calendar[Calendar.MONTH+1]
-            it.day = calendar[Calendar.DAY_OF_MONTH]
-        }
-        return calendar1
-    }
-
-    private fun calendarMapToTimeInMillisList(map: MutableMap<String,com.haibin.calendarview.Calendar>): MutableList<Long>{
-        val list = mutableListOf<Long>()
-        for (i in map){
-            list.add(i.value.timeInMillis)
-        }
-        return list
-    }
-
-    private fun timeInMillisListToCalendarMap(list: MutableList<Long>):MutableMap<String,com.haibin.calendarview.Calendar>{
-        val map = mutableMapOf<String,com.haibin.calendarview.Calendar>()
-        for (i in list){
-            val calendar:com.haibin.calendarview.Calendar = timeInMillisToCalendar(i)
-            map[calendar.toString()] = calendar
-        }
-        return map
-    }
-
-    private fun jsonToCalendarMap(string: String):MutableMap<String,com.haibin.calendarview.Calendar>{
-        return Gson().fromJson(string,object : TypeToken<MutableMap<String, com.haibin.calendarview.Calendar>>(){}.type)
     }
 }

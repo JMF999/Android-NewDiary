@@ -16,7 +16,8 @@ class Test {
             calendar1.month = 1
             calendar1.day = 10
             calendar1.scheme = "-1"
-            println(calendar1.lunar)
+            println("c1 lunar "+calendar1.lunar)
+            println("c1: $calendar1")
             map[calendar1.toString()] = calendar1
 
             val calendar2 = Calendar()
@@ -24,13 +25,16 @@ class Test {
             calendar2.scheme = "-2"
             map[calendar2.toString()] = calendar2
 
-            println(map)
+            println("map: $map")
 
             val s = Gson().toJson(map)
-            println(s)
+            println("json: $s")
 
             val map1:MutableMap<String,Calendar> = Gson().fromJson(s,object : TypeToken<MutableMap<String,Calendar>>(){}.type)
-            println(map1)
+            val map2:Map<String,Calendar> = Gson().fromJson(s,object : TypeToken<Map<String,Calendar>>(){}.type)
+            println("解析后：$map1")
         }
+
+        data class MyData(val map: Map<String, Calendar>)
     }
 }
