@@ -4,14 +4,24 @@ import android.content.Context
 import android.widget.Toast
 
 class MyToast {
-    companion object{
+    companion object {
         private var mToast: Toast? = null
-        fun showToast(context: Context, msg: String) {
-            mToast = if (mToast == null){
-                Toast.makeText(context, msg, Toast.LENGTH_LONG)
-            }else{
+
+        // todo 代码可以精简
+        fun showToast(context: Context, msg: String, isLong: Boolean) {
+            mToast = if (mToast == null) {
+                if (isLong) {
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG)
+                } else {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT)
+                }
+            } else {
                 mToast?.cancel()
-                Toast.makeText(context, msg, Toast.LENGTH_LONG)
+                if (isLong) {
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG)
+                } else {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT)
+                }
             }
             mToast?.show()
         }

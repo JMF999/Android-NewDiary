@@ -3,20 +3,19 @@ package com.example.newdiary
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.haibin.calendarview.Calendar
-import com.haibin.calendarview.CalendarView
 
 class Test {
-    companion object{
+    companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val map = mutableMapOf<String,Calendar>()
+            val map = mutableMapOf<String, Calendar>()
 
             val calendar1 = Calendar()
             calendar1.year = 2023
             calendar1.month = 1
             calendar1.day = 10
             calendar1.scheme = "-1"
-            println("c1 lunar "+calendar1.lunar)
+            println("c1 lunar " + calendar1.lunar)
             println("c1: $calendar1")
             map[calendar1.toString()] = calendar1
 
@@ -30,8 +29,10 @@ class Test {
             val s = Gson().toJson(map)
             println("json: $s")
 
-            val map1:MutableMap<String,Calendar> = Gson().fromJson(s,object : TypeToken<MutableMap<String,Calendar>>(){}.type)
-            val map2:Map<String,Calendar> = Gson().fromJson(s,object : TypeToken<Map<String,Calendar>>(){}.type)
+            val map1: MutableMap<String, Calendar> =
+                Gson().fromJson(s, object : TypeToken<MutableMap<String, Calendar>>() {}.type)
+            val map2: Map<String, Calendar> =
+                Gson().fromJson(s, object : TypeToken<Map<String, Calendar>>() {}.type)
             println("解析后：$map1")
         }
 

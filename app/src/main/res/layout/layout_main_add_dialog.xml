@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:background="@color/calendar_background">
+
+    <TextView
+        android:id="@+id/add_dialog_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_dialog_title"
+        android:textColor="@color/calendar_text"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/add_dialog_tv4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_dialog_text3"
+        android:textColor="@color/calendar_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/add_dialog_tv5"
+        app:layout_constraintEnd_toEndOf="@+id/add_dialog_tv3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/add_dialog_tv3"
+        app:layout_constraintTop_toBottomOf="@+id/add_dialog_tv3" />
+
+    <TextView
+        android:id="@+id/add_dialog_tv6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_dialog_text5"
+        android:textColor="@color/calendar_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="@+id/add_dialog_tv5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/add_dialog_tv5"
+        app:layout_constraintTop_toBottomOf="@+id/add_dialog_tv5" />
+
+    <TextView
+        android:id="@+id/add_dialog_tv5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_dialog_text4"
+        android:textColor="@color/calendar_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/add_dialog_tv6"
+        app:layout_constraintEnd_toEndOf="@+id/add_dialog_tv4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/add_dialog_tv4"
+        app:layout_constraintTop_toBottomOf="@+id/add_dialog_tv4" />
+
+    <TextView
+        android:id="@+id/add_dialog_tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_dialog_text_1"
+        android:textColor="@color/calendar_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/add_dialog_tv3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <TextView
+        android:id="@+id/add_dialog_tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_dialog_text2"
+        android:textColor="@color/calendar_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/add_dialog_tv4"
+        app:layout_constraintEnd_toEndOf="@+id/add_dialog_tv2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/add_dialog_tv2"
+        app:layout_constraintTop_toBottomOf="@+id/add_dialog_tv2" />
+
+    <EditText
+        android:id="@+id/add_dialog_ed1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="数字"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintBottom_toBottomOf="@+id/add_dialog_tv2"
+        app:layout_constraintStart_toEndOf="@+id/add_dialog_tv2"
+        app:layout_constraintTop_toTopOf="@+id/add_dialog_tv2"
+        app:layout_constraintVertical_bias="0.5"
+        tools:inputType="number" />
+
+    <EditText
+        android:id="@+id/add_dialog_ed2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="未启用"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintBottom_toBottomOf="@+id/add_dialog_tv3"
+        app:layout_constraintStart_toEndOf="@+id/add_dialog_tv3"
+        app:layout_constraintTop_toTopOf="@+id/add_dialog_tv3" />
+
+    <EditText
+        android:id="@+id/add_dialog_ed3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="请输入"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintBottom_toBottomOf="@+id/add_dialog_tv4"
+        app:layout_constraintStart_toEndOf="@+id/add_dialog_tv4"
+        app:layout_constraintTop_toTopOf="@+id/add_dialog_tv4" />
+
+    <EditText
+        android:id="@+id/add_dialog_ed4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="未启用"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintBottom_toBottomOf="@+id/add_dialog_tv5"
+        app:layout_constraintStart_toEndOf="@+id/add_dialog_tv5"
+        app:layout_constraintTop_toTopOf="@+id/add_dialog_tv5" />
+
+    <EditText
+        android:id="@+id/add_dialog_ed5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="未启用"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintBottom_toBottomOf="@+id/add_dialog_tv6"
+        app:layout_constraintStart_toEndOf="@+id/add_dialog_tv6"
+        app:layout_constraintTop_toTopOf="@+id/add_dialog_tv6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="52dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="440dp" />
+
+    <Button
+        android:id="@+id/add_dialog_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/lucency"
+        android:text="取消"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+    <Button
+        android:id="@+id/add_dialog_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/lucency"
+        android:text="确定"
+        android:textColor="@color/calendar_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,24 +8,48 @@ import com.haibin.calendarview.Calendar
 
 class MyViewModel(application: Application) : AndroidViewModel(application) {
     private val _liveDataMap = MutableLiveData<MutableMap<String, Calendar>>()
-    val liveDataMap:LiveData<MutableMap<String, Calendar>> get() = _liveDataMap
+    val liveDataMap: LiveData<MutableMap<String, Calendar>> get() = _liveDataMap
     private val dataRepository = getApplication<MyApplication>().dataRepository
 
     init {
         _liveDataMap.value = dataRepository.calendarMap
     }
 
-    fun add(calendar: Calendar){
+    fun add(calendar: Calendar) {
         dataRepository.add(calendar)
         _liveDataMap.value = dataRepository.calendarMap
     }
 
-    fun remove(calendar: Calendar){
+    fun remove(calendar: Calendar) {
         dataRepository.remove(calendar)
         _liveDataMap.value = dataRepository.calendarMap
     }
 
-    fun saveData(){
-        dataRepository.inSave()
+    fun importData() {
+        dataRepository.importData()
+        _liveDataMap.value = dataRepository.calendarMap
+    }
+
+    fun outData() {
+        dataRepository.outData()
+        _liveDataMap.value = dataRepository.calendarMap
+    }
+
+    fun clearAllData() {
+        dataRepository.clearAllData()
+        _liveDataMap.value = dataRepository.calendarMap
+    }
+
+    fun monthCount(year: Int, month: Int): Int {
+        return dataRepository.monthCount(year, month)
+    }
+
+    fun allCount(): Int {
+        return dataRepository.allCount()
+    }
+
+    fun oldDataToNewData() {
+        dataRepository.oldDataToNewData()
+        _liveDataMap.value = dataRepository.calendarMap
     }
 }

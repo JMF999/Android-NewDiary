@@ -5,14 +5,14 @@ import android.content.res.Configuration
 import android.util.Log
 
 class MyApplication : Application() {
-    companion object{
-        private lateinit var app:MyApplication
+    companion object {
+        private lateinit var app: MyApplication
         fun getInstance(): MyApplication {
-            return  app
+            return app
         }
     }
 
-    lateinit var dataRepository:DataRepository
+    lateinit var dataRepository: DataRepository
 
     // 程序启动时调用
     override fun onCreate() {
