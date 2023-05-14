@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var today: Calendar
 
-    private lateinit var viewModel2: MyViewModel
+    private lateinit var viewModel: MyViewModel
+    private var nowMonthCount: Int = 0  // 本月数据总数，为了避免重复计算而建立
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,31 +34,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.materialToolbar)
 
+        // 申请权限
+        checkSelfPermission()
+        today = binding.calendarView.selectedCalendar
+
         // 获取 MyViewModel 对象
-        viewModel2 = ViewModelProvider(this)[MyViewModel::class.java]
-        binding.calendarView.setSchemeDate(viewModel2.liveDataMap.value)
-        viewModel2.liveDataMap.observe(this) {
-            // 在数据变化时触发该回调函数
+        viewModel = ViewModelProvider(this)[MyViewModel::class.java]
+        // viewModel数据观察
+        binding.calendarView.setSchemeDate(viewModel.liveDataMap.value)
+        // 在数据变化时触发该回调函数,同时会初始化界面文本
+        viewModel.liveDataMap.observe(this) {
+            nowMonthCount = viewModel.monthCount(
+                binding.calendarView.selectedCalendar.year,
+                binding.calendarView.selectedCalendar.month
+            )
             upTextMap(it)
             upTextInformation()
-//            upTitleDate(binding.calendarView.selectedCalendar)
             upTitleDate()
             binding.calendarView.setSchemeDate(it)
             binding.calendarView.update()
             Log.d(TAG, "onCreate: 数据变化！$it")
-            Log.d(TAG, "onCreate: ${binding.calendarView.selectedCalendar.scheme}")
         }
-
-        // 申请权限
-        checkSelfPermission()
 
         // 设置日历属性
         binding.calendarView.setMonthView(MeiZuMonthView::class.java)
         binding.calendarView.setWeekView(MeizuWeekView::class.java)
-
-        // 初始化顶部文字
-        upTitleDate()
-        today = binding.calendarView.selectedCalendar
 
         // 设置返回当前日期
         binding.mainTv1.setOnClickListener {
@@ -87,9 +88,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
-//                if (isClick) {
-//                    upTitleDate(calendar)
-//                }
+                nowMonthCount = viewModel.monthCount(
+                    binding.calendarView.selectedCalendar.year,
+                    binding.calendarView.selectedCalendar.month
+                )
                 upTitleDate()
                 upTextInformation()
                 today.differ(calendar).also {
@@ -115,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MainActivity)
                         .setTitle("删除当前选择的日期")
                         .setPositiveButton("确认") { _, _ ->
-                            viewModel2.remove(binding.calendarView.selectedCalendar)
+                            viewModel.remove(binding.calendarView.selectedCalendar)
                         }.setNegativeButton("取消") { _, _ -> }.show()
                 } else if (calendar?.hasScheme() == false) {
                     AlertDialog.Builder(this@MainActivity)
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                         .setPositiveButton("确认") { _, _ ->
                             Log.d(TAG, "将" + binding.calendarView.selectedCalendar + "添加至map")
                             binding.calendarView.selectedCalendar.scheme = "X"
-                            viewModel2.add(binding.calendarView.selectedCalendar)
+                            viewModel.add(binding.calendarView.selectedCalendar)
                         }.setNegativeButton("取消") { _, _ -> }.show()
                 }
 
@@ -134,9 +136,9 @@ class MainActivity : AppCompatActivity() {
         binding.mainFloatingActionButton.setOnClickListener {
 //            addDialog()
             if (binding.calendarView.selectedCalendar.hasScheme()) {
-                viewModel2.remove(binding.calendarView.selectedCalendar)
+                viewModel.remove(binding.calendarView.selectedCalendar)
             } else {
-                viewModel2.add(binding.calendarView.selectedCalendar)
+                viewModel.add(binding.calendarView.selectedCalendar)
             }
         }
     }
@@ -149,26 +151,26 @@ class MainActivity : AppCompatActivity() {
             R.id.main_menu_1 -> AlertDialog.Builder(this@MainActivity)
                 .setTitle("导入数据？")
                 .setPositiveButton("确认") { _, _ ->
-                    viewModel2.importData()
+                    viewModel.importData()
 //                    MyToast.showToast(this,"导入数据完成.")
                 }.setNegativeButton("取消") { _, _ -> }.show()
             R.id.main_menu_2 -> AlertDialog.Builder(this@MainActivity)
                 .setTitle("导出数据？")
                 .setPositiveButton("确认") { _, _ ->
-                    viewModel2.outData()
+                    viewModel.outData()
 //                    MyToast.showToast(this,"导出数据完成.")
                 }.setNegativeButton("取消") { _, _ -> }.show()
             R.id.main_menu_3 -> AlertDialog.Builder(this@MainActivity)
                 .setTitle("清空所有数据？！")
                 .setPositiveButton("确认") { _, _ ->
-                    viewModel2.clearAllData()
+                    viewModel.clearAllData()
 //                    MyToast.showToast(this,"所有数据已清除.")
                 }.setNegativeButton("取消") { _, _ -> }.show()
             R.id.main_menu_4 -> AlertDialog.Builder(this@MainActivity)
                 .setTitle("旧版DiaryAPP数据导入迁移")
                 .setMessage("请将数据文件放置在手机根目录Diary文件夹下，并确定文件名为XData.json")
                 .setPositiveButton("开始导入") { _, _ ->
-                    viewModel2.oldDataToNewData()
+                    viewModel.oldDataToNewData()
                 }.setNegativeButton("取消") { _, _ -> }.show()
         }
         return super.onOptionsItemSelected(item)
@@ -190,21 +192,13 @@ class MainActivity : AppCompatActivity() {
         binding.mainTv1.text = binding.calendarView.selectedCalendar.month.toString() + "月"
         binding.mainTv2.text = binding.calendarView.selectedCalendar.year.toString()
         binding.mainTv3.text = binding.calendarView.selectedCalendar.lunar
-//        if(binding.mainTv9.text.toString()!="") {
-//            if (binding.mainTv9.text.toString().toInt()>4) {
-//                binding.mainTv9.setTextColor(getColor(R.color.red))
-//            } else {
-//                binding.mainTv9.setTextColor(getColor(R.color.calendar_text))
-//            }
-//        }
-        binding.mainTv9.text = viewModel2.monthCount(
-            binding.calendarView.selectedCalendar.year,
-            binding.calendarView.selectedCalendar.month
-        ).toString()
-        binding.mainTv8.text = viewModel2.monthCount(
-            binding.calendarView.selectedCalendar.year,
-            binding.calendarView.selectedCalendar.month
-        ).toString()
+        if (nowMonthCount > 4) {
+            binding.mainTv9.setTextColor(getColor(R.color.red))
+        } else {
+            binding.mainTv9.setTextColor(getColor(R.color.calendar_text))
+        }
+        binding.mainTv9.text = nowMonthCount.toString()
+        binding.mainTv8.text = nowMonthCount.toString()
     }
 
     /**
@@ -247,22 +241,10 @@ class MainActivity : AppCompatActivity() {
                 it
             }
         }
-        binding.mainMapCount.text = "距离今天：${distance}\n历史总计：${viewModel2.allCount()}\n当月总计：${
-            viewModel2.monthCount(
-                binding.calendarView.selectedCalendar.year,
-                binding.calendarView.selectedCalendar.month
-            )
-        }\n"
+        binding.mainMapCount.text =
+            "距离今天：${distance}\n历史总计：${viewModel.allCount()}\n当月总计：${nowMonthCount}\n"
     }
 
-//    private fun copyCalendar(oldCalendar: Calendar): Calendar {
-//        return Calendar().also {
-//            it.year = oldCalendar.year
-//            it.month = oldCalendar.month
-//            it.day = oldCalendar.day
-//            it.lunar = oldCalendar.lunar
-//        }
-//    }
     /**
      * 申请权限
      */

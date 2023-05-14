@@ -178,26 +178,26 @@ public class MeiZuMonthView extends MonthView {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    private Paint selectTextPaint(Calendar calendar){
-        if (calendar.hasScheme()){
+    private Paint selectTextPaint(Calendar calendar) {
+        if (calendar.hasScheme() && calendar.isCurrentMonth()) {
             return mSchemeTextPaint;
-        }else if(calendar.isCurrentDay()){
+        } else if (calendar.isCurrentDay()) {
             return mCurDayTextPaint;
-        }else if(calendar.isCurrentMonth()){
+        } else if (calendar.isCurrentMonth()) {
             return mCurMonthTextPaint;
-        }else {
+        } else {
             return mOtherMonthTextPaint;
         }
     }
 
-    private Paint selectLunarTextPaint(Calendar calendar){
-        if (calendar.hasScheme()){
+    private Paint selectLunarTextPaint(Calendar calendar) {
+        if (calendar.hasScheme() && calendar.isCurrentMonth()) {
             return mSchemeLunarTextPaint;
-        }else if(calendar.isCurrentDay()){
+        } else if (calendar.isCurrentDay()) {
             return mCurDayLunarTextPaint;
-        }else if(calendar.isCurrentMonth()){
+        } else if (calendar.isCurrentMonth()) {
             return mCurMonthLunarTextPaint;
-        }else {
+        } else {
             return mOtherMonthLunarTextPaint;
         }
     }
