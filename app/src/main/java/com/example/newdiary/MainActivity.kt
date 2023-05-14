@@ -190,6 +190,13 @@ class MainActivity : AppCompatActivity() {
         binding.mainTv1.text = binding.calendarView.selectedCalendar.month.toString() + "月"
         binding.mainTv2.text = binding.calendarView.selectedCalendar.year.toString()
         binding.mainTv3.text = binding.calendarView.selectedCalendar.lunar
+//        if(binding.mainTv9.text.toString()!="") {
+//            if (binding.mainTv9.text.toString().toInt()>4) {
+//                binding.mainTv9.setTextColor(getColor(R.color.red))
+//            } else {
+//                binding.mainTv9.setTextColor(getColor(R.color.calendar_text))
+//            }
+//        }
         binding.mainTv9.text = viewModel2.monthCount(
             binding.calendarView.selectedCalendar.year,
             binding.calendarView.selectedCalendar.month

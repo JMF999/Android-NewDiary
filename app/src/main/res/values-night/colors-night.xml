@@ -14,5 +14,7 @@
     <color name="gray">#959595</color>
     <color name="calendar_text">#FFFFFF</color>
     <color name="calendar_background">#383838</color>
-    <color name="selected_theme_color">#E0D0FF</color>
+    <color name="selected_theme_color">#CFB6FF</color>
+    <color name="calendar_text_today">#CFB6FF</color>
+    <color name="calendar_Scheme_text">#FF0000</color>
 </resources>
