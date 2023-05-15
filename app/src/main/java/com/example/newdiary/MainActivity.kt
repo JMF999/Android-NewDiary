@@ -1,17 +1,16 @@
 package com.example.newdiary
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +18,7 @@ import com.example.newdiary.databinding.ActivityMainBinding
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.Calendar.Scheme
 import com.haibin.calendarview.CalendarView
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivity"
@@ -30,9 +30,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setDecorFitsSystemWindows(false) // 沉浸式状态栏相关
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.materialToolbar)
+
+        setSupportActionBar(binding.materialToolbar)    // 设置状态栏
 
         // 申请权限
         checkSelfPermission()
@@ -54,6 +56,22 @@ class MainActivity : AppCompatActivity() {
             binding.calendarView.setSchemeDate(it)
             binding.calendarView.update()
             Log.d(TAG, "onCreate: 数据变化！$it")
+        }
+
+        // 观察背景图片数据，切换主题
+        viewModel.switchBackground.observe(this) {
+            when (it) {
+                0 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.color.calendar_background)
+                1 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.drawable.background1)
+                2 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.drawable.background2)
+                3 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.drawable.background3)
+                4 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.drawable.background4)
+            }
         }
 
         // 设置日历属性
@@ -94,14 +112,6 @@ class MainActivity : AppCompatActivity() {
                 )
                 upTitleDate()
                 upTextInformation()
-                today.differ(calendar).also {
-                    if (it < 0) {
-                        binding.mainTv5.text = (-it).toString()
-                    } else {
-                        binding.mainTv5.text = it.toString()
-                    }
-                }
-
             }
         })
 
@@ -172,8 +182,20 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("开始导入") { _, _ ->
                     viewModel.oldDataToNewData()
                 }.setNegativeButton("取消") { _, _ -> }.show()
+            R.id.main_menu_5 -> switchBackground()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    // 切换主题
+    private fun switchBackground() {
+        when (viewModel.switchBackground.value) {
+            0 -> viewModel.switchBackground.value = 1
+            1 -> viewModel.switchBackground.value = 2
+            2 -> viewModel.switchBackground.value = 3
+            3 -> viewModel.switchBackground.value = 4
+            4 -> viewModel.switchBackground.value = 0
+        }
     }
 
     /**
@@ -198,7 +220,6 @@ class MainActivity : AppCompatActivity() {
             binding.mainTv9.setTextColor(getColor(R.color.calendar_text))
         }
         binding.mainTv9.text = nowMonthCount.toString()
-        binding.mainTv8.text = nowMonthCount.toString()
     }
 
     /**
@@ -337,4 +358,29 @@ class MainActivity : AppCompatActivity() {
         }
         return s.toString()
     }
+
+    /**
+     * 获取状态栏高度
+     */
+    fun getStatusBarHeight(activity: Activity): Int {
+        val windowInsets = activity.window.decorView.rootWindowInsets
+        return windowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0
+    }
+
+    /**
+     * 沉浸式状态栏相关，具体不知道干啥的
+     */
+    override fun onResume() {
+        super.onResume()
+        val insetsController = window.insetsController
+        if (insetsController != null) {
+            insetsController.setSystemBarsAppearance(
+                0,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+            insetsController.systemBarsBehavior =
+                WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
 }

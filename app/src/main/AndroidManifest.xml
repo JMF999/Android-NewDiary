@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNA" />
 
     <application
@@ -18,7 +17,8 @@
         android:theme="@style/Theme.NewDiary"
         tools:targetApi="31"
         android:requestLegacyExternalStorage="true"
-        android:preserveLegacyExternalStorage="true">
+        android:preserveLegacyExternalStorage="true"
+        android:resizeableActivity="true">
         <activity
             android:name=".MainActivity"
             android:exported="true">

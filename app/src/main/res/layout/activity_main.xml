@@ -5,17 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/calendar_background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/main_root"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/calendar_background"
+        android:background="@color/lucency"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:title="@string/app_name"
-        app:menu="@menu/main_menu" />
+        app:menu="@menu/main_menu"
+        app:titleTextColor="@color/calendar_text"
+        app:subtitleTextColor="@color/calendar_text"
+        app:icon="@color/black"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -32,7 +37,7 @@
             android:id="@+id/main_tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1月"
+            tools:text="1月"
             android:textColor="@color/calendar_text"
             android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
@@ -57,61 +62,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:text="初一"
+                tools:text="初一"
                 android:textColor="@color/calendar_text" />
 
             <TextView
                 android:id="@+id/main_tv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2023"
+                tools:text="2023"
                 android:textColor="@color/calendar_text" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/main_tv4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="距离今日："
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/main_tv5"
-            app:layout_constraintEnd_toStartOf="@+id/main_tv5"
-            app:layout_constraintTop_toTopOf="@+id/main_tv5" />
-
-        <TextView
-            android:id="@+id/main_tv5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="0"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
-
-        <TextView
-            android:id="@+id/main_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="当月总计："
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/main_tv8"
-            app:layout_constraintEnd_toStartOf="@+id/main_tv8"
-            app:layout_constraintTop_toTopOf="@+id/main_tv8"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/main_tv8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="0"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_floatingActionButton"
@@ -120,17 +80,24 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
+            android:elevation="10dp"
+            android:backgroundTint="@color/main_floatingActionButton"
+            app:backgroundTint="@color/main_floatingActionButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_baseline_add_24"
-            tools:ignore="SpeakableTextPresentCheck" />
-
+            tools:ignore="SpeakableTextPresentCheck"
+            android:contentDescription="@string/main_floatButton_contentDescription" />
 
         <com.haibin.calendarview.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/calendar_background"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:padding="5dp"
+            android:elevation="5dp"
+            android:background="@drawable/main_information_background"
             app:calendar_height="50dp"
             app:current_day_lunar_text_color="@color/red"
             app:current_day_text_color="@color/red"
@@ -148,10 +115,11 @@
             app:scheme_theme_color="#333333"
             app:selected_lunar_text_color="@color/calendar_text"
             app:selected_text_color="@color/calendar_text"
-            app:selected_theme_color="@color/selected_theme_color"
-            app:week_background="@color/calendar_background"
+            app:selected_theme_color="@color/calendar_selected_color"
+            app:week_background="@color/lucency"
             app:week_start_with="sun"
-            app:week_text_color="@color/calendar_text">
+            app:week_text_color="@color/calendar_text"
+            app:year_view_background="@color/calendar_background">
 
         </com.haibin.calendarview.CalendarView>
 
@@ -159,8 +127,9 @@
             android:id="@+id/main_tv6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
-            android:text="Information"
+            android:text="@string/main_information"
             android:textColor="@color/calendar_text"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,10 +141,13 @@
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
+            android:background="@drawable/main_information_background"
+            android:elevation="5dp"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -193,19 +165,22 @@
                     android:id="@+id/main_map_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView" />
+                    tools:text="TextView"
+                    android:textColor="@color/calendar_text"/>
 
                 <TextView
                     android:id="@+id/main_calendar_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView" />
+                    tools:text="TextView"
+                    android:textColor="@color/calendar_text"/>
 
                 <TextView
                     android:id="@+id/main_map_all_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView" />
+                    tools:text="TextView"
+                    android:textColor="@color/calendar_text"/>
 
             </LinearLayout>
 

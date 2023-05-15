@@ -1,6 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.NewDiary" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/fzxbs</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -10,9 +11,14 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/calendar_background</item>
+<!--        <item name="android:statusBarColor">@color/calendar_background</item>-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
+<!--        禁用系统阴影-->
+<!--        <item name="android:outlineAmbientShadowColor">@android:color/transparent</item>-->
+<!--        <item name="android:outlineSpotShadowColor">@android:color/transparent</item>-->
+
     </style>
 </resources>

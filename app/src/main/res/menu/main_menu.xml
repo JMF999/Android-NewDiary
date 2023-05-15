@@ -2,17 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/main_menu_1"
-        android:title="导入数据" />
+        android:title="@string/main_menu_importData" />
     <item
         android:id="@+id/main_menu_2"
-        android:title="导出数据" />
+        android:title="@string/main_menu_outData" />
     <item
         android:id="@+id/main_menu_3"
-        android:title="清除全部数据" />
+        android:title="@string/main_menu_clearData" />
     <item
         android:id="@+id/main_menu_4"
-        android:title="旧版数据迁移" />
+        android:title="@string/main_menu_oldDataToNew" />
     <item
         android:id="@+id/main_menu_5"
-        android:title="设置" />
+        android:title="@string/main_menu_switchTheme" />
+    <item
+        android:id="@+id/main_menu_6"
+        android:title="@string/main_menu_set" />
+
 </menu>

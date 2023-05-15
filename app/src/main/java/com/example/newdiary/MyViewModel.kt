@@ -11,6 +11,11 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     val liveDataMap: LiveData<MutableMap<String, Calendar>> get() = _liveDataMap
     private val dataRepository = getApplication<MyApplication>().dataRepository
 
+    /**
+     * 当前背景图像
+     */
+    var switchBackground = MutableLiveData(0)
+
     init {
         _liveDataMap.value = dataRepository.calendarMap
     }

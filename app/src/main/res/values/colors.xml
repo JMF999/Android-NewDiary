@@ -12,9 +12,15 @@
     <color name="mauve">#D9CAF5</color>
     <color name="red">#FF0000</color>
     <color name="gray">#959595</color>
+
     <color name="calendar_text">#000000</color>
-    <color name="calendar_background">#FFFFFF</color>
-    <color name="selected_theme_color">#673AB7</color>
-    <color name="calendar_text_today">#673AB7</color>
-    <color name="calendar_Scheme_text">#FF0000</color>
+    <color name="calendar_background">#f0f3f8</color>
+    <color name="calendar_selected_color">#000000</color>
+    <color name="calendar_today_text">#000000</color>
+    <color name="calendar_scheme_text">#FF0000</color>
+
+    <color name="main_information_background">#80FFFFFF</color>
+
+    <color name="main_floatingActionButton">#F0F3F8</color>
+
 </resources>
