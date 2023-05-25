@@ -19,6 +19,5 @@
 <!--        禁用系统阴影-->
 <!--        <item name="android:outlineAmbientShadowColor">@android:color/transparent</item>-->
 <!--        <item name="android:outlineSpotShadowColor">@android:color/transparent</item>-->
-
     </style>
 </resources>

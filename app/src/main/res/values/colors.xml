@@ -19,7 +19,8 @@
     <color name="calendar_today_text">#000000</color>
     <color name="calendar_scheme_text">#FF0000</color>
 
-    <color name="main_information_background">#80FFFFFF</color>
+    <color name="main_information_background">#FFFFFF</color>
+    <color name="main_information_background_alp">#4DFFFFFF</color>
 
     <color name="main_floatingActionButton">#F0F3F8</color>
 

@@ -16,6 +16,8 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
      */
     var switchBackground = MutableLiveData(0)
 
+    val warnNumber = dataRepository.warnNumbar
+
     init {
         _liveDataMap.value = dataRepository.calendarMap
     }

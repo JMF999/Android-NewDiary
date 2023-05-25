@@ -19,6 +19,7 @@ import java.time.ZoneId
 // todo 1.改成单例模式 2.删除仓库类中所有Toast，现在所有Toast由仓库类完成，交给Activity处理
 class DataRepository(private val context: Context) {
     var calendarMap = mutableMapOf<String, Calendar>()
+    val warnNumbar = 4
 
     // 安卓11无法访问根目录，没权限
     // 外部储存路径  /storage/emulated/0/Diary

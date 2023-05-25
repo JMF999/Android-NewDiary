@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/calendar_background"
-    android:orientation="vertical"
-    android:id="@+id/main_root"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
@@ -16,15 +16,23 @@
         android:background="@color/lucency"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:title="@string/app_name"
+        app:icon="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/main_menu"
-        app:titleTextColor="@color/calendar_text"
         app:subtitleTextColor="@color/calendar_text"
-        app:icon="@color/black"/>
+        app:title="@string/app_name"
+        app:titleTextColor="@color/calendar_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbar">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -37,7 +45,6 @@
             android:id="@+id/main_tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="1月"
             android:textColor="@color/calendar_text"
             android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
@@ -45,7 +52,8 @@
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.44" />
+            app:layout_constraintVertical_bias="0.44"
+            tools:text="1月" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -62,15 +70,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                tools:text="初一"
-                android:textColor="@color/calendar_text" />
+                android:textColor="@color/calendar_text"
+                tools:text="初一" />
 
             <TextView
                 android:id="@+id/main_tv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="2023"
-                android:textColor="@color/calendar_text" />
+                android:textColor="@color/calendar_text"
+                tools:text="2023" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,15 +87,15 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:elevation="10dp"
             android:backgroundTint="@color/main_floatingActionButton"
+            android:clickable="true"
+            android:contentDescription="@string/main_floatButton_contentDescription"
+            android:elevation="10dp"
             app:backgroundTint="@color/main_floatingActionButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_baseline_add_24"
-            tools:ignore="SpeakableTextPresentCheck"
-            android:contentDescription="@string/main_floatButton_contentDescription" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <com.haibin.calendarview.CalendarView
             android:id="@+id/calendarView"
@@ -95,9 +103,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:padding="5dp"
-            android:elevation="5dp"
             android:background="@drawable/main_information_background"
+            android:elevation="5dp"
+            android:padding="5dp"
             app:calendar_height="50dp"
             app:current_day_lunar_text_color="@color/red"
             app:current_day_text_color="@color/red"
@@ -165,22 +173,22 @@
                     android:id="@+id/main_map_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView"
-                    android:textColor="@color/calendar_text"/>
+                    android:textColor="@color/calendar_text"
+                    tools:text="TextView" />
 
                 <TextView
                     android:id="@+id/main_calendar_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView"
-                    android:textColor="@color/calendar_text"/>
+                    android:textColor="@color/calendar_text"
+                    tools:text="TextView" />
 
                 <TextView
                     android:id="@+id/main_map_all_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="TextView"
-                    android:textColor="@color/calendar_text"/>
+                    android:textColor="@color/calendar_text"
+                    tools:text="TextView" />
 
             </LinearLayout>
 
@@ -203,5 +211,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

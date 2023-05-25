@@ -3,6 +3,7 @@ package com.example.newdiary
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setDecorFitsSystemWindows(false) // 沉浸式状态栏相关
+        window.setDecorFitsSystemWindows(false) // 沉浸式状态栏相关。通知视窗，我们（应用）会处理任何系统视窗（而不是 decor）
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -46,15 +47,26 @@ class MainActivity : AppCompatActivity() {
         binding.calendarView.setSchemeDate(viewModel.liveDataMap.value)
         // 在数据变化时触发该回调函数,同时会初始化界面文本
         viewModel.liveDataMap.observe(this) {
+            // 更新当月总计次数
             nowMonthCount = viewModel.monthCount(
                 binding.calendarView.selectedCalendar.year,
                 binding.calendarView.selectedCalendar.month
             )
+
+            if (nowMonthCount > viewModel.warnNumber) {
+                viewModel.switchBackground.value = 5
+            }    // 判断是否更换背景
+            invalidateOptionsMenu()     // 刷新标题栏
+
+            // 更新界面文字信息
             upTextMap(it)
             upTextInformation()
             upTitleDate()
+
+            // 重新为日历view设置数据列表
             binding.calendarView.setSchemeDate(it)
-            binding.calendarView.update()
+            binding.calendarView.update()   // 更新日历显示
+
             Log.d(TAG, "onCreate: 数据变化！$it")
         }
 
@@ -71,6 +83,19 @@ class MainActivity : AppCompatActivity() {
                     AppCompatResources.getDrawable(this, R.drawable.background3)
                 4 -> binding.mainRoot.background =
                     AppCompatResources.getDrawable(this, R.drawable.background4)
+                5 -> binding.mainRoot.background =
+                    AppCompatResources.getDrawable(this, R.drawable.background_red)
+            }
+            if (it > 0) {
+                binding.calendarView.background =
+                    AppCompatResources.getDrawable(this, R.drawable.main_information_background_alp)
+                binding.scrollView2.background =
+                    AppCompatResources.getDrawable(this, R.drawable.main_information_background_alp)
+            } else {
+                binding.calendarView.background =
+                    AppCompatResources.getDrawable(this, R.drawable.main_information_background)
+                binding.scrollView2.background =
+                    AppCompatResources.getDrawable(this, R.drawable.main_information_background)
             }
         }
 
@@ -153,6 +178,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 切换主题
+    private fun switchBackground() {
+        when (viewModel.switchBackground.value) {
+            0 -> viewModel.switchBackground.value = 1
+            1 -> viewModel.switchBackground.value = 2
+            2 -> viewModel.switchBackground.value = 3
+            3 -> viewModel.switchBackground.value = 4
+            4 -> viewModel.switchBackground.value = 0
+            5 -> viewModel.switchBackground.value = 0
+        }
+//        if (nowMonthCount < 5){
+//            when (viewModel.switchBackground.value) {
+//                0 -> viewModel.switchBackground.value = 1
+//                1 -> viewModel.switchBackground.value = 2
+//                2 -> viewModel.switchBackground.value = 3
+//                3 -> viewModel.switchBackground.value = 4
+//                4 -> viewModel.switchBackground.value = 0
+//                5 -> viewModel.switchBackground.value = 0
+//            }
+//        }else{
+//            MyToast.showToast(this,"禁止切换！",true)
+//            viewModel.switchBackground.value = 5
+//        }
+
+    }
+
+    /**
+     * 设置标题栏bar
+     */
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        updateMenuIcon()
+        Log.d(TAG, "onCreateOptionsMenu: 重新创建bar")
+        return super.onCreateOptionsMenu(menu)
+//        return true
+
+    }
+
+    // 在需要更新菜单图标的地方调用该方法
+    private fun updateMenuIcon() {
+        Log.d(TAG, "updateMenuIcon: 更改toolbar")
+        // 修改菜单项的图标
+        binding.materialToolbar.menu.findItem(R.id.main_menu_7).isVisible =
+            nowMonthCount > viewModel.warnNumber
+        // 更新菜单显示
+//        setSupportActionBar(binding.materialToolbar)
+//        invalidateOptionsMenu()
+    }
+
     /**
      * 右上角菜单栏监听
      */
@@ -183,28 +257,14 @@ class MainActivity : AppCompatActivity() {
                     viewModel.oldDataToNewData()
                 }.setNegativeButton("取消") { _, _ -> }.show()
             R.id.main_menu_5 -> switchBackground()
+            R.id.main_menu_7 -> AlertDialog.Builder(this@MainActivity)
+                .setTitle("警告！")
+                .setMessage("本月记录次数已经超过阈值！")
+                .setPositiveButton("确认") { _, _ -> }.show()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    // 切换主题
-    private fun switchBackground() {
-        when (viewModel.switchBackground.value) {
-            0 -> viewModel.switchBackground.value = 1
-            1 -> viewModel.switchBackground.value = 2
-            2 -> viewModel.switchBackground.value = 3
-            3 -> viewModel.switchBackground.value = 4
-            4 -> viewModel.switchBackground.value = 0
-        }
-    }
-
-    /**
-     * 设置标题栏bar
-     */
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
 
     /**
      * 更新标题文字
@@ -374,13 +434,23 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         val insetsController = window.insetsController
         if (insetsController != null) {
-            insetsController.setSystemBarsAppearance(
-                0,
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            )
+            // 系统为深色模式
+            if (isDarkModeEnabled()) {
+                insetsController.setSystemBarsAppearance(
+                    0,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            }
             insetsController.systemBarsBehavior =
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 
+    /**
+     * 判断系统是否为深色模式
+     */
+    private fun isDarkModeEnabled(): Boolean {
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+    }
 }
