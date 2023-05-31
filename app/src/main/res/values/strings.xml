@@ -14,4 +14,6 @@
     <string name="main_menu_switchTheme">切换背景</string>
     <string name="main_floatButton_contentDescription">添加日程</string>
     <string name="main_information">Information</string>
+    <string name="main_menu_allData">数据统计</string>
+    <string name="dialog_display_allData_title">数据统计信息</string>
 </resources>

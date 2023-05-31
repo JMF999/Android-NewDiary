@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.haibin.calendarview.Calendar
+import com.haibin.calendarview.Calendar.Scheme
 
 class MyViewModel(application: Application) : AndroidViewModel(application) {
     private val _liveDataMap = MutableLiveData<MutableMap<String, Calendar>>()
@@ -57,6 +58,16 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
     fun oldDataToNewData() {
         dataRepository.oldDataToNewData()
+        _liveDataMap.value = dataRepository.calendarMap
+    }
+
+    fun addScheme(calendar: Calendar, scheme: Scheme){
+        dataRepository.addScheme(calendar, scheme)
+        _liveDataMap.value = dataRepository.calendarMap
+    }
+
+    fun removeScheme(calendar: Calendar, scheme: Scheme){
+        dataRepository.removeScheme(calendar, scheme)
         _liveDataMap.value = dataRepository.calendarMap
     }
 }

@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.haibin.calendarview.Calendar
+import com.haibin.calendarview.Calendar.Scheme
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -97,6 +98,37 @@ class DataRepository(private val context: Context) {
             MyToast.showToast(context, "数据已存在！", false)
             Log.d(TAG, "add: 数据已存在")
         }
+        return false
+    }
+
+    fun addScheme(calendar: Calendar, scheme: Scheme):Boolean{
+        for (i in calendarMap){
+            if(i.value == calendar){
+                i.value.addScheme(scheme)
+                Log.d(TAG, "addScheme: 添加Scheme数据 $scheme ----> $calendar")
+                inSave()
+                return true
+            }
+        }
+        add(calendar)
+        addScheme(calendar, scheme)
+        Log.d(TAG, "addScheme: 添加Scheme数据失败 $scheme ----> $calendar")
+        return false
+    }
+
+    fun removeScheme(calendar: Calendar, scheme: Scheme):Boolean{
+        for(i in calendarMap){
+            if(i.value == calendar){
+                for(n in i.value.schemes){
+                    if (n == scheme){
+                        i.value.schemes.remove(scheme)
+                        Log.d(TAG, "removeScheme: 移除Scheme数据 $scheme ----> $calendar")
+                        return true
+                    }
+                }
+            }
+        }
+        Log.d(TAG, "removeScheme: 移除Scheme数据失败 $scheme ----> $calendar")
         return false
     }
 

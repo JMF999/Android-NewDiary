@@ -1,7 +1,6 @@
 package com.example.newdiary
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
@@ -9,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var today: Calendar
 
     private lateinit var viewModel: MyViewModel
-    private var nowMonthCount: Int = 0  // 本月数据总数，为了避免重复计算而建立
+    private var nowMonthCount: Int = 0  // 当前显示月份的数据总数，为了避免重复计算而建立
+    private var todayMonthCount: Int = 0  // 当前实际月份的数据总数
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +53,18 @@ class MainActivity : AppCompatActivity() {
                 binding.calendarView.selectedCalendar.year,
                 binding.calendarView.selectedCalendar.month
             )
+            todayMonthCount = viewModel.monthCount(
+                today.year,
+                today.month
+            )
 
-            if (nowMonthCount > viewModel.warnNumber) {
-                viewModel.switchBackground.value = 5
-            }    // 判断是否更换背景
+//            if (nowMonthCount > viewModel.warnNumber) {
+//                viewModel.switchBackground.value = 5
+//            }    // 判断是否更换背景
             invalidateOptionsMenu()     // 刷新标题栏
 
             // 更新界面文字信息
-            upTextMap(it)
+//            upTextMap(it)
             upTextInformation()
             upTitleDate()
 
@@ -72,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         // 观察背景图片数据，切换主题
         viewModel.switchBackground.observe(this) {
+            Log.d(TAG, "viewModel.switchBackground.observe: $it")
             when (it) {
                 0 -> binding.mainRoot.background =
                     AppCompatResources.getDrawable(this, R.color.calendar_background)
@@ -88,9 +94,15 @@ class MainActivity : AppCompatActivity() {
             }
             if (it > 0) {
                 binding.calendarView.background =
-                    AppCompatResources.getDrawable(this, R.drawable.main_information_background_alp)
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.main_information_background_alp30
+                    )
                 binding.scrollView2.background =
-                    AppCompatResources.getDrawable(this, R.drawable.main_information_background_alp)
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.main_information_background_alp30
+                    )
             } else {
                 binding.calendarView.background =
                     AppCompatResources.getDrawable(this, R.drawable.main_information_background)
@@ -169,39 +181,32 @@ class MainActivity : AppCompatActivity() {
 
         // 主浮动动作按钮
         binding.mainFloatingActionButton.setOnClickListener {
-//            addDialog()
-            if (binding.calendarView.selectedCalendar.hasScheme()) {
-                viewModel.remove(binding.calendarView.selectedCalendar)
-            } else {
-                viewModel.add(binding.calendarView.selectedCalendar)
-            }
+            addDialog()
         }
     }
 
-    // 切换主题
+    /**
+     * 切换主题,单选对话框
+     */
     private fun switchBackground() {
-        when (viewModel.switchBackground.value) {
-            0 -> viewModel.switchBackground.value = 1
-            1 -> viewModel.switchBackground.value = 2
-            2 -> viewModel.switchBackground.value = 3
-            3 -> viewModel.switchBackground.value = 4
-            4 -> viewModel.switchBackground.value = 0
-            5 -> viewModel.switchBackground.value = 0
-        }
-//        if (nowMonthCount < 5){
-//            when (viewModel.switchBackground.value) {
-//                0 -> viewModel.switchBackground.value = 1
-//                1 -> viewModel.switchBackground.value = 2
-//                2 -> viewModel.switchBackground.value = 3
-//                3 -> viewModel.switchBackground.value = 4
-//                4 -> viewModel.switchBackground.value = 0
-//                5 -> viewModel.switchBackground.value = 0
-//            }
-//        }else{
-//            MyToast.showToast(this,"禁止切换！",true)
-//            viewModel.switchBackground.value = 5
-//        }
+        val options = arrayOf("原始背景", "紫绿", "粉白", "蓝紫", "蓝色")
+        var selectedOptionIndex = viewModel.switchBackground.value ?: 0 // 默认选中的选项索引
 
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("更换背景")
+        builder.setSingleChoiceItems(options, selectedOptionIndex) { _, which ->
+            selectedOptionIndex = which // 更新选中的选项索引
+        }
+
+        builder.setPositiveButton("确定") { _, _ ->
+            // 在确定按钮点击时执行的逻辑，可以根据选中的选项索引执行相应操作
+            viewModel.switchBackground.value = selectedOptionIndex
+        }
+
+        builder.setNegativeButton("取消", null) // 取消按钮
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     /**
@@ -210,9 +215,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         updateMenuIcon()
-        Log.d(TAG, "onCreateOptionsMenu: 重新创建bar")
         return super.onCreateOptionsMenu(menu)
-//        return true
 
     }
 
@@ -221,7 +224,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "updateMenuIcon: 更改toolbar")
         // 修改菜单项的图标
         binding.materialToolbar.menu.findItem(R.id.main_menu_7).isVisible =
-            nowMonthCount > viewModel.warnNumber
+            todayMonthCount > viewModel.warnNumber
         // 更新菜单显示
 //        setSupportActionBar(binding.materialToolbar)
 //        invalidateOptionsMenu()
@@ -259,10 +262,29 @@ class MainActivity : AppCompatActivity() {
             R.id.main_menu_5 -> switchBackground()
             R.id.main_menu_7 -> AlertDialog.Builder(this@MainActivity)
                 .setTitle("警告！")
-                .setMessage("本月记录次数已经超过阈值！")
+                .setMessage("本月记录次数已经超过阈值！ ${viewModel.monthCount(today.year, today.month)}")
                 .setPositiveButton("确认") { _, _ -> }.show()
+            R.id.main_menu_6 -> menuDisplayData()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    @SuppressLint("SetTextI18n", "InflateParams")
+    private fun menuDisplayData() {
+        val builder = AlertDialog.Builder(this)
+        val view: View =
+            LayoutInflater.from(this).inflate(R.layout.layout_main_all_data_display, null)
+        val tv: TextView = view.findViewById<EditText>(R.id.dialog_dataDisplay_content)
+        tv.text = "历史总计：${viewModel.allCount()}\n" + upTextMap(viewModel.liveDataMap.value!!)
+        val dialog = builder.setView(view).show()
+
+        // 设置自定义宽度
+        val layoutParams = WindowManager.LayoutParams()
+        val window = dialog.window
+        layoutParams.copyFrom(window?.attributes)
+        layoutParams.width = resources.getDimensionPixelSize(R.dimen.dialog_width) // 自定义宽度
+        layoutParams.height = resources.getDimensionPixelSize(R.dimen.dialog_height) // 自定义高度
+        window?.attributes = layoutParams
     }
 
 
@@ -273,7 +295,8 @@ class MainActivity : AppCompatActivity() {
     private fun upTitleDate() {
         binding.mainTv1.text = binding.calendarView.selectedCalendar.month.toString() + "月"
         binding.mainTv2.text = binding.calendarView.selectedCalendar.year.toString()
-        binding.mainTv3.text = binding.calendarView.selectedCalendar.lunar
+//        binding.mainTv2.text = binding.calendarView.selectedCalendar.lunar
+        binding.mainTv3.text = distanceToday(binding.calendarView.selectedCalendar)
         if (nowMonthCount > 4) {
             binding.mainTv9.setTextColor(getColor(R.color.red))
         } else {
@@ -285,14 +308,15 @@ class MainActivity : AppCompatActivity() {
     /**
      * 更新信息窗口内容，全部数据
      */
-    private fun upTextMap(map: Map<String, Calendar>) {
+    private fun upTextMap(map: Map<String, Calendar>): String {
         val s = StringBuilder()
         s.append("全部数据:\n")
         for (i in map) {
             s.append("${i.key}\n")
         }
         s.append("\n")
-        binding.mainMapAllText.text = s
+//        binding.mainMapAllText.text = s
+        return s.toString()
     }
 
     /**
@@ -324,6 +348,21 @@ class MainActivity : AppCompatActivity() {
         }
         binding.mainMapCount.text =
             "距离今天：${distance}\n历史总计：${viewModel.allCount()}\n当月总计：${nowMonthCount}\n"
+    }
+
+    /**
+     * 计算与本日相差时间
+     */
+    private fun distanceToday(calendar: Calendar): String {
+        today.differ(calendar).also {
+            return if (it == 0) {
+                "今天"
+            } else if (it < 0) {
+                "${(-it)}日后"
+            } else {
+                "${(it)}日前"
+            }
+        }
     }
 
     /**
@@ -400,9 +439,8 @@ class MainActivity : AppCompatActivity() {
             if (ed3.text.toString() != "") {
                 scheme.scheme = ed3.text.toString()
             }
-            binding.calendarView.selectedCalendar.addScheme(scheme)
+            viewModel.addScheme(binding.calendarView.selectedCalendar, scheme)
             alertDialog.dismiss()
-            Log.d(TAG, "addDialog: 添加数据 $scheme")
         }
         bnNo.setOnClickListener { alertDialog.dismiss() }
     }
@@ -417,14 +455,6 @@ class MainActivity : AppCompatActivity() {
             s.append(schemeToStr(i))
         }
         return s.toString()
-    }
-
-    /**
-     * 获取状态栏高度
-     */
-    fun getStatusBarHeight(activity: Activity): Int {
-        val windowInsets = activity.window.decorView.rootWindowInsets
-        return windowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0
     }
 
     /**

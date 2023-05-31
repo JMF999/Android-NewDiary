@@ -5,7 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="15dp"
-    android:background="@color/calendar_background">
+    android:background="@color/calendar_background"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/add_dialog_tv1"
@@ -187,6 +188,7 @@
         android:layout_marginTop="16dp"
         android:background="@color/lucency"
         android:text="取消"
+        android:textSize="20sp"
         android:textColor="@color/calendar_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
@@ -200,6 +202,7 @@
         android:layout_marginTop="16dp"
         android:background="@color/lucency"
         android:text="确定"
+        android:textSize="20sp"
         android:textColor="@color/calendar_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"

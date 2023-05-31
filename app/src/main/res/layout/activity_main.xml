@@ -81,6 +81,18 @@
                 tools:text="2023" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/main_tv4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/calendar_text"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.216"
+            tools:text="2023" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_floatingActionButton"
             android:layout_width="wrap_content"
@@ -153,19 +165,20 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/main_information_background"
-            android:elevation="5dp"
-            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_tv6"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.0"
+            android:padding="8dp"
+            android:elevation="5dp"
+            android:background="@drawable/main_information_background"
+            >
 
             <LinearLayout
                 android:id="@+id/main_ll_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/calendarView">
 
@@ -189,9 +202,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/calendar_text"
                     tools:text="TextView" />
-
             </LinearLayout>
-
         </ScrollView>
 
         <TextView

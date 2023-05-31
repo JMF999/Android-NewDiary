@@ -18,7 +18,7 @@
         android:title="@string/main_menu_switchTheme" />
     <item
         android:id="@+id/main_menu_6"
-        android:title="@string/main_menu_set" />
+        android:title="@string/main_menu_allData" />
 
     <item
         android:id="@+id/main_menu_7"
